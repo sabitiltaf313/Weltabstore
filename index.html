@@ -1,54 +1,233 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="ur" dir="rtl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WellTabs Store — Seller Wallet</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WellTabs Store - Seller Wallet</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f3f6fb;color:#172033;font-family:Arial,sans-serif}header{background:#123047;color:white;padding:20px;text-align:center}main{max-width:900px;margin:20px auto;padding:0 14px}.card{background:white;border-radius:14px;padding:18px;margin:14px 0;box-shadow:0 4px 16px #102a4310}h1,h2{margin-top:0}label{display:block;margin:10px 0 5px}input,select,button{font:inherit;padding:12px;border-radius:8px;border:1px solid #ccd5df;width:100%}button{background:#087f8c;color:white;border:0;font-weight:bold;margin-top:10px;cursor:pointer}.secondary{background:#123047}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.muted{color:#617286;font-size:14px}.money{font-size:28px;font-weight:bold;color:#087f8c}.hidden{display:none}.row{border-bottom:1px solid #e4e9ef;padding:12px 0;word-break:break-word}.status{font-weight:bold}#message{white-space:pre-wrap;color:#a02a2a}small{color:#617286}
+body{font-family:Arial,sans-serif;background:#f1f5f9;margin:0;color:#172033}
+header{background:#123c2b;color:white;padding:18px;text-align:center}
+main{max-width:700px;margin:20px auto;padding:12px}
+.card{background:white;padding:18px;margin:12px 0;border-radius:12px;box-shadow:0 2px 8px #0001}
+input,select,button{box-sizing:border-box;width:100%;padding:12px;margin:7px 0;border-radius:7px;border:1px solid #ccd3dc}
+button{background:#147d46;color:white;border:0;font-weight:bold}
+.secondary{background:#475569}
+.hidden{display:none}
+.muted{color:#64748b;font-size:14px}
+.money{font-size:27px;color:#147d46;font-weight:bold}
 </style>
 </head>
 <body>
-<header><h1>WellTabs Store</h1><div>Seller Wallet • کمیشن • ادائیگیوں کا ریکارڈ</div></header>
-<main>
-<div class="card"><h2>اکاؤنٹ</h2><p class="muted">اپنے Firebase پروجیکٹ کی معلومات اس فائل میں درج کریں۔ پہلے Firebase Authentication میں Email/Password فعال کریں۔</p>
-<label>ای میل</label><input id="email" type="email" autocomplete="email" placeholder="آپ کی ای میل">
-<label>پاس ورڈ</label><input id="password" type="password" autocomplete="current-password" placeholder="پاس ورڈ">
-<div class="grid"><button id="signup">نیا اکاؤنٹ بنائیں</button><button id="login" class="secondary">لاگ اِن</button><button id="logout" class="secondary">لاگ آؤٹ</button></div><p id="userLine" class="muted">لاگ اِن نہیں ہیں</p><p id="message"></p></div>
-<div id="walletArea" class="hidden">
-<div class="grid"><div class="card"><h2>آپ کا والیٹ</h2><div class="money" id="balance">Rs. 0</div><small>صرف سرور سے منظور شدہ بیلنس</small></div><div class="card"><h2>فی کامیاب فروخت کمیشن</h2><div class="money">Rs. 200</div><small>یہ کمیشن سرور پر لاگو ہونا چاہیے۔</small></div></div>
-<div class="card"><h2>رقم نکلوانے کی درخواست</h2><label>رقم (روپے)</label><input id="amount" type="number" min="1" step="1" placeholder="مثلاً 1000"><label>ادائیگی کا طریقہ</label><select id="method"><option value="easypaisa">ایزی پیسہ</option><option value="jazzcash">جاز کیش</option><option value="bank">بینک اکاؤنٹ</option></select><label>اکاؤنٹ/IBAN کی تفصیل</label><input id="accountDetails" maxlength="160" placeholder="اپنا وصول کنندہ نمبر یا IBAN درج کریں"><p class="muted">صرف ضروری وصول کنندہ تفصیل دیں۔ یہ درخواست ہے، خودکار رقم منتقلی نہیں۔</p><button id="withdraw">درخواست جمع کریں</button></div>
-<div class="card"><h2>میری ادائیگیوں کی تاریخ</h2><div id="myPayouts" class="muted">لاگ اِن کریں۔</div></div>
-</div>
-<div id="adminArea" class="card hidden"><h2>ایڈمن پینل — رقم نکلوانے کی درخواستیں</h2><p class="muted">صرف Firebase میں Admin کا اختیار رکھنے والے اکاؤنٹ کے لیے۔ ادائیگی پہلے باہر سے کریں، پھر ٹرانزیکشن ریفرنس درج کرکے مکمل کریں۔</p><button id="refreshAdmin">درخواستیں تازہ کریں</button><div id="adminPayouts"></div></div>
-<div class="card"><h2>اہم</h2><p class="muted">یہ ابتدائی Wallet ڈیش بورڈ ہے۔ حقیقی بیلنس، کمیشن، اور درخواستوں کی اجازت Cloud Functions اور Firestore Rules سے محفوظ کی جاتی ہے۔ Firebase Console میں اپنا Admin اختیار محفوظ طریقے سے ترتیب دیں۔ ویب صفحے میں کبھی Service Account یا Admin SDK کی خفیہ کلید نہ ڈالیں۔</p></div>
-</main>
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, collection, query, where, orderBy, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-import { getFunctions, httpsCallable } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js';
+<header>
+<h1>WellTabs Store</h1>
+<div>سیلر والٹ اور ادائیگی کا نظام</div>
+</header>
 
-// Firebase Console > Project settings > Your apps سے اپنی اصل config درج کریں۔
+<main>
+<div class="card" id="loginBox">
+<h2>اکاؤنٹ میں داخل ہوں</h2>
+<input id="email" type="email" placeholder="ای میل">
+<input id="password" type="password" placeholder="پاس ورڈ">
+<button id="signup">نیا اکاؤنٹ بنائیں</button>
+<button id="login" class="secondary">لاگ اِن کریں</button>
+<p id="message" class="muted"></p>
+</div>
+
+<div id="walletArea" class="hidden">
+<div class="card">
+<h2>میرا سیلر والٹ</h2>
+<p>دستیاب رقم</p>
+<div class="money">Rs. <span id="balance">0</span></div>
+<p class="muted">ہر تصدیق شدہ کامیاب فروخت پر کمیشن: Rs. 200</p>
+<button id="logout" class="secondary">لاگ آؤٹ</button>
+</div>
+
+<div class="card">
+<h2>رقم نکلوانے کی درخواست</h2>
+<input id="amount" type="number" min="1" placeholder="رقم پاکستانی روپے میں">
+<select id="method">
+<option value="Easypaisa">Easypaisa</option>
+<option value="JazzCash">JazzCash</option>
+<option value="Bank">بینک اکاؤنٹ</option>
+</select>
+<input id="accountName" placeholder="اکاؤنٹ ہولڈر کا نام">
+<input id="accountNumber" placeholder="اکاؤنٹ نمبر یا متعلقہ تفصیل">
+<button id="withdraw">درخواست جمع کریں</button>
+<p class="muted">ادائیگی ایڈمن کی تصدیق اور دستی کارروائی کے بعد ہوگی۔</p>
+</div>
+
+<div class="card">
+<h2>میری ادائیگی کی ہسٹری</h2>
+<div id="history">ریکارڈ لوڈ ہو رہا ہے...</div>
+</div>
+
+<div id="adminArea" class="hidden">
+<div class="card">
+<h2>ایڈمن ڈیش بورڈ</h2>
+<h3>Withdrawal Requests</h3>
+<div id="requests">لوڈ ہو رہا ہے...</div>
+<h3>تصدیق شدہ فروخت</h3>
+<input id="sellerUid" placeholder="Seller UID">
+<input id="orderId" placeholder="Order ID">
+<button id="creditSale">کامیاب فروخت پر Rs. 200 کریڈٹ کریں</button>
+<p class="muted">صرف حقیقی اور تصدیق شدہ فروخت درج کریں۔ ہر Order ID صرف ایک مرتبہ استعمال کریں۔</p>
+</div>
+</div>
+</div>
+</main>
+
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+getAuth,onAuthStateChanged,createUserWithEmailAndPassword,
+signInWithEmailAndPassword,signOut
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+getFirestore,doc,getDoc,collection,getDocs,query,where
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFunctions,httpsCallable}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-functions.js";
+
 const firebaseConfig = {
-  apiKey: 'PASTE_YOUR_API_KEY',
-  authDomain: 'PASTE_YOUR_PROJECT.firebaseapp.com',
-  projectId: 'PASTE_YOUR_PROJECT_ID',
-  storageBucket: 'PASTE_YOUR_PROJECT.appspot.com',
-  messagingSenderId: 'PASTE_YOUR_SENDER_ID',
-  appId: 'PASTE_YOUR_APP_ID'
+  apiKey: "AIzaSyCU-mwBjGmQvE-BGuD47QOdIyrxT-u3jXg",
+  authDomain: "welltabestore-4d76d.firebaseapp.com",
+  projectId: "welltabestore-4d76d",
+  storageBucket: "welltabestore-4d76d.firebasestorage.app",
+  messagingSenderId: "578913882905",
+  appId: "1:578913882905:web:cfb908901d2aa861a6eb88"
 };
-const app = initializeApp(firebaseConfig), auth = getAuth(app), db = getFirestore(app), functions = getFunctions(app);
-const $ = id => document.getElementById(id);
-function msg(s, bad=true){$('message').style.color=bad?'#a02a2a':'#087f8c';$('message').textContent=s}
-const money = n => 'Rs. ' + Number(n||0).toLocaleString('en-PK');
-$('signup').onclick=async()=>{try{await createUserWithEmailAndPassword(auth,$('email').value,$('password').value);msg('اکاؤنٹ بن گیا۔ اگر آپ Seller/Admin ہیں تو اختیار محفوظ طریقے سے ترتیب دینا ضروری ہے۔',false)}catch(e){msg(e.message)}};
-$('login').onclick=async()=>{try{await signInWithEmailAndPassword(auth,$('email').value,$('password').value);msg('لاگ اِن کامیاب۔',false)}catch(e){msg(e.message)}};
-$('logout').onclick=()=>signOut(auth).catch(e=>msg(e.message));
-$('withdraw').onclick=async()=>{try{const fn=httpsCallable(functions,'requestWithdrawal');const r=await fn({amount:Number($('amount').value),method:$('method').value,accountDetails:$('accountDetails').value.trim()});msg('درخواست جمع ہوگئی۔ حوالہ: '+r.data.requestId,false);await loadUserData(auth.currentUser)}catch(e){msg('درخواست جمع نہیں ہوئی: '+e.message)}};
-$('refreshAdmin').onclick=async()=>{try{await loadAdmin()}catch(e){msg('ایڈمن ڈیٹا نہیں کھل سکا: '+e.message)}};
-async function loadUserData(user){if(!user)return; $('walletArea').classList.remove('hidden');try{const snap=await getDoc(doc(db,'wallets',user.uid));$('balance').textContent=money(snap.exists()?snap.data().availableBalance:0)}catch(e){$('balance').textContent='دستیاب نہیں';}
-try{const q=query(collection(db,'withdrawalRequests'),where('sellerId','==',user.uid),orderBy('createdAt','desc'));const snaps=await getDocs(q);$('myPayouts').innerHTML='';if(snaps.empty){$('myPayouts').textContent='ابھی کوئی درخواست نہیں۔';return}snaps.forEach(d=>{const x=d.data(),div=document.createElement('div');div.className='row';div.textContent=`${money(x.amount)} — ${x.method} — ${x.status} — حوالہ: ${d.id}`;$('myPayouts').appendChild(div)})}catch(e){$('myPayouts').textContent='ریکارڈ لوڈ نہیں ہوا؛ Firestore Rules اور Index چیک کریں۔'}}
-async function loadAdmin(){const fn=httpsCallable(functions,'adminListWithdrawals');const r=await fn({});$('adminPayouts').innerHTML='';if(!r.data.requests.length){$('adminPayouts').textContent='کوئی درخواست نہیں۔';return}r.data.requests.forEach(x=>{const div=document.createElement('div');div.className='row';const title=document.createElement('p');title.textContent=`${money(x.amount)} | ${x.method} | ${x.status} | Seller UID: ${x.sellerId} | Account: ${x.accountDetails}`;const ref=document.createElement('input');ref.placeholder='ٹرانزیکشن ریفرنس (ادائیگی کے بعد)';const btn=document.createElement('button');btn.textContent='ادائیگی مکمل نشان زد کریں';btn.onclick=async()=>{if(!ref.value.trim()){alert('ٹرانزیکشن ریفرنس درج کریں');return}try{await httpsCallable(functions,'adminMarkWithdrawalPaid')({requestId:x.id,transactionReference:ref.value.trim()});await loadAdmin();msg('ریکارڈ اپ ڈیٹ ہوگیا۔ یقینی بنائیں کہ اصل ادائیگی آپ پہلے کر چکے ہیں۔',false)}catch(e){msg(e.message)}};div.append(title,ref,btn);$('adminPayouts').appendChild(div)})}
-onAuthStateChanged(auth,async user=>{if(!user){$('userLine').textContent='لاگ اِن نہیں ہیں';$('walletArea').classList.add('hidden');$('adminArea').classList.add('hidden');return}$('userLine').textContent='لاگ اِن: '+user.email+' | UID: '+user.uid;await loadUserData(user);try{const token=await user.getIdTokenResult(true);if(token.claims.admin===true){$('adminArea').classList.remove('hidden');await loadAdmin()}else{$('adminArea').classList.add('hidden')}}catch(e){$('adminArea').classList.add('hidden')}});
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const functions=getFunctions(app);
+
+const $=id=>document.getElementById(id);
+const msg=t=>$("message").textContent=t;
+const money=n=>Number(n||0).toLocaleString("en-PK");
+let currentUser=null;
+
+function showError(e){
+msg(e?.message||"کوئی خرابی پیش آئی۔");
+}
+
+$("signup").onclick=async()=>{
+try{
+await createUserWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);
+msg("اکاؤنٹ بن گیا۔");
+}catch(e){showError(e);}
+};
+
+$("login").onclick=async()=>{
+try{
+await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);
+msg("لاگ اِن کامیاب۔");
+}catch(e){showError(e);}
+};
+
+$("logout").onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,async user=>{
+currentUser=user;
+$("loginBox").classList.toggle("hidden",!!user);
+$("walletArea").classList.toggle("hidden",!user);
+if(user){
+try{await refresh();}
+catch(e){msg(e?.message||"ریکارڈ لوڈ نہیں ہوسکا۔");}
+}
+});
+
+async function refresh(){
+if(!currentUser)return;
+const u=await getDoc(doc(db,"users",currentUser.uid));
+const data=u.exists()?u.data():{};
+$("balance").textContent=money(data.balance);
+$("adminArea").classList.toggle("hidden",data.role!=="admin");
+
+const q=query(collection(db,"withdrawalRequests"),
+where("sellerUid","==",currentUser.uid));
+const snaps=await getDocs(q);
+$("history").textContent="";
+
+if(snaps.empty){
+$("history").textContent="ابھی کوئی ادائیگی یا درخواست موجود نہیں۔";
+}else{
+snaps.forEach(d=>{
+const x=d.data();
+const p=document.createElement("p");
+p.textContent=`Rs. ${money(x.amount)} — ${x.method} — ${x.status}`;
+$("history").appendChild(p);
+});
+}
+if(data.role==="admin")await loadRequests();
+}
+
+$("withdraw").onclick=async()=>{
+try{
+const amount=Number($("amount").value);
+const method=$("method").value;
+const accountName=$("accountName").value.trim();
+const accountNumber=$("accountNumber").value.trim();
+
+if(!Number.isSafeInteger(amount)||amount<=0)
+throw Error("درست پوری رقم لکھیں۔");
+if(!accountName||!accountNumber)
+throw Error("ادائیگی کی تفصیل مکمل کریں۔");
+
+await httpsCallable(functions,"requestWithdrawal")({
+amount,method,accountName,accountNumber
+});
+msg("درخواست جمع ہوگئی۔");
+await refresh();
+}catch(e){showError(e);}
+};
+
+async function loadRequests(){
+const s=await getDocs(query(collection(db,"withdrawalRequests"),
+where("status","==","pending")));
+$("requests").textContent="";
+
+if(s.empty){
+$("requests").textContent="کوئی زیرِ التوا درخواست نہیں۔";
+return;
+}
+
+s.forEach(d=>{
+const x=d.data();
+const box=document.createElement("div");
+box.className="card";
+const info=document.createElement("p");
+info.textContent=`Seller: ${x.sellerUid} | Rs. ${money(x.amount)} | ${x.method}`;
+
+const b=document.createElement("button");
+b.textContent="ادائیگی مکمل ہونے کے بعد منظور کریں";
+b.onclick=async()=>{
+if(!confirm("کیا آپ نے واقعی ادائیگی کر دی ہے؟"))return;
+try{
+await httpsCallable(functions,"completeWithdrawal")({requestId:d.id});
+await refresh();
+}catch(e){alert(e?.message||"درخواست مکمل نہیں ہوسکی۔");}
+};
+box.append(info,b);
+$("requests").appendChild(box);
+});
+}
+
+$("creditSale").onclick=async()=>{
+try{
+const sellerUid=$("sellerUid").value.trim();
+const orderId=$("orderId").value.trim();
+if(!sellerUid||!orderId)
+throw Error("Seller UID اور Order ID درج کریں۔");
+
+await httpsCallable(functions,"creditSuccessfulSale")({
+sellerUid,orderId
+});
+alert("درخواست سرور کو بھیج دی گئی۔");
+await refresh();
+}catch(e){alert(e?.message||"درخواست مکمل نہیں ہوسکی۔");}
+};
 </script>
-</body></html>
+</body>
+</html>
